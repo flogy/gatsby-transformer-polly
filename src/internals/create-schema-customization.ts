@@ -1,5 +1,6 @@
 import path from "path";
 import { existsSync } from "fs";
+import crypto from "crypto";
 import {
   GraphQLString,
   GraphQLInt,
@@ -16,6 +17,13 @@ targetExtensionMap.set("mp3", "mp3");
 targetExtensionMap.set("ogg_vorbis", "ogg");
 targetExtensionMap.set("pcm", "pcm");
 
+const buildHash = (file: any, fieldArgs: any) => {
+  const unhashedKey = `Polly-SpeechMarks-${
+    file.internal.contentDigest
+  }-${JSON.stringify(fieldArgs)}`;
+  return crypto.createHash("md5").update(unhashedKey).digest("hex");
+};
+
 const resolveAudioFileSrc = async (
   file: any,
   polly: any,
@@ -25,11 +33,12 @@ const resolveAudioFileSrc = async (
   pluginOptions: any
 ) => {
   const ssmlFileAbsolutePath = file.absolutePath;
+  const hash = buildHash(file, fieldArgs);
   const targetDirectoryAbsolute = path.join(
     process.cwd(),
     "public",
     "static",
-    file.internal.contentDigest
+    hash
   );
   const targetFilename = `${file.name}.${targetExtensionMap.get(
     fieldArgs.audioFileFormat
@@ -49,9 +58,7 @@ const resolveAudioFileSrc = async (
     );
   }
 
-  return `/static/${file.internal.contentDigest}/${encodeURIComponent(
-    targetFilename
-  )}`;
+  return `/static/${hash}/${encodeURIComponent(targetFilename)}`;
 };
 
 const resolveSpeechMarks = async (
@@ -62,7 +69,7 @@ const resolveSpeechMarks = async (
   cache: any,
   pluginOptions: any
 ) => {
-  const cacheKey = `Polly-SpeechMarks-${file.internal.contentDigest}`;
+  const cacheKey = buildHash(file, fieldArgs);
   const cachedSpeechMarks = await cache.get(cacheKey);
   if (cachedSpeechMarks) {
     return cachedSpeechMarks;
