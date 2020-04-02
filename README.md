@@ -107,7 +107,7 @@ Now you can just query the required data using GraphQL:
 ```js
 const data = useStaticQuery(graphql`
   query {
-    file(relativePath: { eq: "ssml/hello-world.xml" }) {
+    file(relativePath: { eq: "hello-world.xml" }) {
       childPolly {
         # Specify the speech output attributes right in the query.
         polly(voiceId: "Justin", audioFileFormat: "mp3") {
