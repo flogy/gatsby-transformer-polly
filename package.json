@@ -1,0 +1,48 @@
+{
+  "name": "gatsby-transformer-polly",
+  "version": "0.0.1",
+  "description": "Generate AWS Polly speech output data from SSML files.",
+  "homepage": "https://github.com/flogy/gatsby-transformer-polly",
+  "bugs": {
+    "url": "https://github.com/flogy/gatsby-transformer-polly/issues"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/flogy/gatsby-transformer-polly.git"
+  },
+  "main": "index.js",
+  "scripts": {
+    "build": "tsc -b",
+    "test": "jest",
+    "prepublishOnly": "npm run build",
+    "preversion": "npm run test",
+    "version": "auto-changelog --breaking-pattern \"BREAKING CHANGE:\" -p && git add CHANGELOG.md",
+    "postversion": "git push origin master --tags && npm publish",
+    "format": "prettier --write \"**/*.{js,jsx,ts,tsx,json,md}\""
+  },
+  "author": "Florian Gyger <info@floriangyger.ch>",
+  "license": "MIT",
+  "keywords": [
+    "gatsby",
+    "gatsby-plugin",
+    "tts",
+    "text-to-speech",
+    "aws",
+    "polly",
+    "ssml"
+  ],
+  "devDependencies": {
+    "@types/jest": "^25.1.4",
+    "@types/node": "^13.9.8",
+    "auto-changelog": "^1.16.3",
+    "gatsby": "^2.20.10",
+    "jest": "^25.2.4",
+    "prettier": "^2.0.2",
+    "ts-jest": "^25.3.0",
+    "typescript": "^3.8.3"
+  },
+  "peerDependencies": {
+    "gatsby": ">=2.20.0",
+    "gatsby-source-filesystem": ">=2.2.0"
+  }
+}
