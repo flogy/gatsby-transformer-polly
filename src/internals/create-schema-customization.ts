@@ -1,3 +1,5 @@
+import path from "path";
+import { existsSync } from "fs";
 import {
   GraphQLString,
   GraphQLInt,
@@ -5,9 +7,9 @@ import {
   GraphQLObjectType,
   // @ts-ignore
 } from "gatsby/graphql";
-import { pollyTypeName } from "./constants";
 import { OutputFormat } from "aws-sdk/clients/polly";
 import { fetchAudioFile, fetchSpeechMarks } from "./aws-polly";
+import { pollyTypeName } from "./constants";
 
 const targetExtensionMap = new Map<OutputFormat, string>();
 targetExtensionMap.set("mp3", "mp3");
@@ -23,28 +25,60 @@ const resolveAudioFileSrc = async (
   pluginOptions: any
 ) => {
   const ssmlFileAbsolutePath = file.absolutePath;
+  const targetDirectoryAbsolute = path.join(
+    process.cwd(),
+    "public",
+    "static",
+    file.internal.contentDigest
+  );
   const targetFilename = `${file.name}.${targetExtensionMap.get(
     fieldArgs.audioFileFormat
   )}`;
+  const targetFilePath = path.join(targetDirectoryAbsolute, targetFilename);
 
-  return await fetchAudioFile(
-    ssmlFileAbsolutePath,
-    pluginOptions,
-    fieldArgs,
+  if (!existsSync(targetFilePath)) {
+    reporter.info(
+      `Generating AWS Polly audio file for SSML file: ${file.base}`
+    );
+    await fetchAudioFile(
+      ssmlFileAbsolutePath,
+      pluginOptions,
+      fieldArgs,
+      targetDirectoryAbsolute,
+      targetFilePath
+    );
+  }
+
+  return `/static/${file.internal.contentDigest}/${encodeURIComponent(
     targetFilename
-  );
+  )}`;
 };
 
 const resolveSpeechMarks = async (
   file: any,
   polly: any,
   fieldArgs: any,
-  cache: any,
   reporter: any,
+  cache: any,
   pluginOptions: any
 ) => {
+  const cacheKey = `Polly-SpeechMarks-${file.internal.contentDigest}`;
+  const cachedSpeechMarks = await cache.get(cacheKey);
+  if (cachedSpeechMarks) {
+    return cachedSpeechMarks;
+  }
+
   const ssmlFileAbsolutePath = file.absolutePath;
-  return await fetchSpeechMarks(ssmlFileAbsolutePath, pluginOptions, fieldArgs);
+  reporter.info(
+    `Generating AWS Polly speech marks for SSML file: ${file.base}`
+  );
+  const fetchedSpeechMarks = await fetchSpeechMarks(
+    ssmlFileAbsolutePath,
+    pluginOptions,
+    fieldArgs
+  );
+  await cache.set(cacheKey, fetchedSpeechMarks);
+  return fetchedSpeechMarks;
 };
 
 const createFields = (

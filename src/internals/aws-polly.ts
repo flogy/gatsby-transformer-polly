@@ -1,7 +1,6 @@
 import { mkdirSync, readFileSync, writeFileSync } from "fs";
-import path from "path";
 import AWS from "aws-sdk";
-import { AudioStream, OutputFormat } from "aws-sdk/clients/polly";
+import { OutputFormat } from "aws-sdk/clients/polly";
 const AwsConfig = AWS.config;
 
 const initializeAwsPolly = (pluginOptions: any) => {
@@ -56,23 +55,12 @@ export const fetchSpeechMarks = async (
   return speechMarks || null;
 };
 
-const publicPath = "./public/polly/";
-
-const saveAudioData = (
-  audioData: AudioStream,
-  targetFilename: string
-): string => {
-  mkdirSync(publicPath, { recursive: true });
-  const targetPath = path.join(publicPath, targetFilename);
-  writeFileSync(targetPath, audioData);
-  return targetPath;
-};
-
 export const fetchAudioFile = async (
   ssmlFileAbsolutePath: string,
   pluginOptions: any,
   fieldArgs: any,
-  targetFilename: string
+  targetDirectoryAbsolute: string,
+  targetFilePath: string
 ) => {
   const ssmlText = readFileSync(ssmlFileAbsolutePath, "utf-8");
   const data = await synthesizeSpeech(
@@ -85,6 +73,7 @@ export const fetchAudioFile = async (
   if (!audioData) {
     throw new Error("No audio stream returned from AWS Polly request.");
   }
-  const absolutePath = saveAudioData(audioData, targetFilename);
-  return absolutePath;
+
+  mkdirSync(targetDirectoryAbsolute, { recursive: true });
+  writeFileSync(targetFilePath, audioData);
 };
