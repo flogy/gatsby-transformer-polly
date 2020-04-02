@@ -10,7 +10,6 @@
     "type": "git",
     "url": "git+https://github.com/flogy/gatsby-transformer-polly.git"
   },
-  "main": "index.js",
   "scripts": {
     "build": "tsc -b",
     "test": "jest",

@@ -1,3 +1,9 @@
 .idea
 *.iml
+/internals
 /node_modules
+
+/gatsby-node.d.ts
+/gatsby-node.d.ts.map
+/gatsby-node.js
+/gatsby-node.js.map

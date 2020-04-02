@@ -1,5 +1,11 @@
 /.idea
 *.iml
 /img
+/internals
 /node_modules
 /package-lock.json
+
+/gatsby-node.d.ts
+/gatsby-node.d.ts.map
+/gatsby-node.js
+/gatsby-node.js.map
