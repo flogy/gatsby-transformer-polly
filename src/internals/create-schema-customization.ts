@@ -6,21 +6,51 @@ import {
   // @ts-ignore
 } from "gatsby/graphql";
 import { pollyTypeName } from "./constants";
+import { OutputFormat } from "aws-sdk/clients/polly";
+import { fetchAudioFile, fetchSpeechMarks } from "./aws-polly";
 
-const resolveAudioFileSrc = (fieldArgs: any, cache: any, reporter: any) => {
-  return "Fake AudioFileSrc";
+const targetExtensionMap = new Map<OutputFormat, string>();
+targetExtensionMap.set("mp3", "mp3");
+targetExtensionMap.set("ogg_vorbis", "ogg");
+targetExtensionMap.set("pcm", "pcm");
+
+const resolveAudioFileSrc = async (
+  file: any,
+  polly: any,
+  fieldArgs: any,
+  reporter: any,
+  cache: any,
+  pluginOptions: any
+) => {
+  const ssmlFileAbsolutePath = file.absolutePath;
+  const targetFilename = `${file.name}.${targetExtensionMap.get(
+    fieldArgs.audioFileFormat
+  )}`;
+
+  return await fetchAudioFile(
+    ssmlFileAbsolutePath,
+    pluginOptions,
+    fieldArgs,
+    targetFilename
+  );
 };
 
-const resolveSpeechMarks = (fieldArgs: any, cache: any, reporter: any) => {
-  return "Fake SpeechMarks";
+const resolveSpeechMarks = async (
+  file: any,
+  polly: any,
+  fieldArgs: any,
+  cache: any,
+  reporter: any,
+  pluginOptions: any
+) => {
+  const ssmlFileAbsolutePath = file.absolutePath;
+  return await fetchSpeechMarks(ssmlFileAbsolutePath, pluginOptions, fieldArgs);
 };
 
-const createFields = ({
-  pathPrefix,
-  getNodeAndSavePathDependency,
-  reporter,
-  cache,
-}: any) => {
+const createFields = (
+  { pathPrefix, getNodeAndSavePathDependency, reporter, cache }: any,
+  pluginOptions: any
+) => {
   return {
     polly: {
       type: new GraphQLObjectType({
@@ -28,13 +58,27 @@ const createFields = ({
         fields: {
           audioFileSrc: {
             type: GraphQLString,
-            resolve: ({ fieldArgs }: any) =>
-              resolveAudioFileSrc(fieldArgs, cache, reporter),
+            resolve: ({ file, polly, fieldArgs }: any) =>
+              resolveAudioFileSrc(
+                file,
+                polly,
+                fieldArgs,
+                reporter,
+                cache,
+                pluginOptions
+              ),
           },
           speechMarks: {
             type: GraphQLString,
-            resolve: ({ fieldArgs }: any) =>
-              resolveSpeechMarks(fieldArgs, cache, reporter),
+            resolve: ({ file, polly, fieldArgs }: any) =>
+              resolveSpeechMarks(
+                file,
+                polly,
+                fieldArgs,
+                reporter,
+                cache,
+                pluginOptions
+              ),
           },
         },
       }),
@@ -74,22 +118,28 @@ const createFields = ({
   };
 };
 
-export const createSchemaCustomization = ({
-  actions: { createTypes },
-  pathPrefix,
-  getNodeAndSavePathDependency,
-  reporter,
-  cache,
-  schema,
-}: any) => {
+export const createSchemaCustomization = (
+  {
+    actions: { createTypes },
+    pathPrefix,
+    getNodeAndSavePathDependency,
+    reporter,
+    cache,
+    schema,
+  }: any,
+  pluginOptions: any
+) => {
   const pollyType = schema.buildObjectType({
     name: pollyTypeName,
-    fields: createFields({
-      pathPrefix,
-      getNodeAndSavePathDependency,
-      reporter,
-      cache,
-    }),
+    fields: createFields(
+      {
+        pathPrefix,
+        getNodeAndSavePathDependency,
+        reporter,
+        cache,
+      },
+      pluginOptions
+    ),
     interfaces: [`Node`],
     extensions: {
       infer: true,

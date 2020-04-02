@@ -30,6 +30,9 @@
     "polly",
     "ssml"
   ],
+  "dependencies": {
+    "aws-sdk": "^2.651.0"
+  },
   "devDependencies": {
     "@types/jest": "^25.1.4",
     "@types/node": "^13.9.8",
