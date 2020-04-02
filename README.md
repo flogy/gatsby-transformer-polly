@@ -124,15 +124,15 @@ const data = useStaticQuery(graphql`
 
 The following query parameters can be used to modify the generated speech output:
 
-| Parameter         | Required | Example            | Valid values                                                                                                            |
-| ----------------- | -------- | ------------------ | ----------------------------------------------------------------------------------------------------------------------- |
-| `voiceId`         | Yes      | `"Justin"`         | See [Voices in Amazon Polly](https://docs.aws.amazon.com/polly/latest/dg/voicelist.html)                                |
-| `audioFileFormat` | Yes      | `"mp3"`            | `mp3 / ogg_vorbis / pcm`                                                                                                |
-| `engine`          | No       | `"standard"`       | `standard / neural`                                                                                                     |
-| `languageCode`    | No       | `"en-US"`          | See "LanguageCode" in [SynthesizeSpeech docs](https://docs.aws.amazon.com/polly/latest/dg/API_SynthesizeSpeech.html)    |
-| `lexiconNames`    | No       | `["LexA", "LexB"]` | See "LexiconNames" in [SynthesizeSpeech docs](https://docs.aws.amazon.com/polly/latest/dg/API_SynthesizeSpeech.html)    |
-| `sampleRate`      | No       | `16000`            | See "SampleRate" in [SynthesizeSpeech docs](https://docs.aws.amazon.com/polly/latest/dg/API_SynthesizeSpeech.html)      |
-| `speechMarkTypes` | No       | `"word"`           | See "SpeechMarkTypes" in [SynthesizeSpeech docs](https://docs.aws.amazon.com/polly/latest/dg/API_SynthesizeSpeech.html) |
+| Parameter         | Required | Example                | Valid values                                                                                                            |
+| ----------------- | -------- | ---------------------- | ----------------------------------------------------------------------------------------------------------------------- |
+| `voiceId`         | Yes      | `"Justin"`             | See [Voices in Amazon Polly](https://docs.aws.amazon.com/polly/latest/dg/voicelist.html)                                |
+| `audioFileFormat` | Yes      | `"mp3"`                | `mp3 / ogg_vorbis / pcm`                                                                                                |
+| `engine`          | No       | `"standard"`           | `standard / neural`                                                                                                     |
+| `languageCode`    | No       | `"en-US"`              | See "LanguageCode" in [SynthesizeSpeech docs](https://docs.aws.amazon.com/polly/latest/dg/API_SynthesizeSpeech.html)    |
+| `lexiconNames`    | No       | `["LexA", "LexB"]`     | See "LexiconNames" in [SynthesizeSpeech docs](https://docs.aws.amazon.com/polly/latest/dg/API_SynthesizeSpeech.html)    |
+| `sampleRate`      | No       | `16000`                | See "SampleRate" in [SynthesizeSpeech docs](https://docs.aws.amazon.com/polly/latest/dg/API_SynthesizeSpeech.html)      |
+| `speechMarkTypes` | No       | `["sentence", "word"]` | See "SpeechMarkTypes" in [SynthesizeSpeech docs](https://docs.aws.amazon.com/polly/latest/dg/API_SynthesizeSpeech.html) |
 
 ## Contribute 🦸
 
