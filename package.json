@@ -1,6 +1,6 @@
 {
   "name": "gatsby-transformer-polly",
-  "version": "0.0.0",
+  "version": "0.0.1",
   "description": "Generate AWS Polly speech output data from SSML files.",
   "homepage": "https://github.com/flogy/gatsby-transformer-polly",
   "bugs": {
