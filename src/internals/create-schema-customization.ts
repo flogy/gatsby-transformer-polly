@@ -8,7 +8,7 @@ import {
   GraphQLObjectType,
   // @ts-ignore
 } from "gatsby/graphql";
-import { OutputFormat } from "aws-sdk/clients/polly";
+import { OutputFormat } from "@aws-sdk/client-polly";
 import { fetchAudioFile, fetchSpeechMarks } from "./aws-polly";
 import { pollyTypeName } from "./constants";
 

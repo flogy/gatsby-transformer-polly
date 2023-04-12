@@ -1,19 +1,36 @@
 import { mkdirSync, readFileSync, writeFileSync } from "fs";
-import AWS from "aws-sdk";
-import { OutputFormat } from "aws-sdk/clients/polly";
-const AwsConfig = AWS.config;
+import { createInterface } from "readline";
+import { defaultProvider } from "@aws-sdk/credential-provider-node";
+import {
+  PollyClient,
+  SynthesizeSpeechCommand,
+  OutputFormat,
+} from "@aws-sdk/client-polly";
+
+const readline = createInterface({
+  input: process.stdin,
+  output: process.stdout,
+});
 
 const initializeAwsPolly = (pluginOptions: any) => {
-  AwsConfig.update({
+  return new PollyClient({
+    apiVersion: "2016-06-10",
     region: pluginOptions.awsRegion,
-    ...(pluginOptions.awsCredentials && {
-      credentials: {
-        accessKeyId: pluginOptions.awsCredentials.accessKeyId,
-        secretAccessKey: pluginOptions.awsCredentials.secretAccessKey,
+    credentials: defaultProvider({
+      profile: pluginOptions.awsProfile,
+      mfaCodeProvider: async (mfaSerial) => {
+        return new Promise((resolve) => {
+          readline.question(
+            `Enter MFA token for AWS account: ${mfaSerial}\n`,
+            (mfaToken) => {
+              readline.close();
+              resolve(mfaToken);
+            }
+          );
+        });
       },
     }),
   });
-  return new AWS.Polly({ apiVersion: "2016-06-10" });
 };
 
 const synthesizeSpeech = async (
@@ -22,21 +39,22 @@ const synthesizeSpeech = async (
   fieldArgs: any,
   outputFormat: OutputFormat
 ) => {
-  const Polly = initializeAwsPolly(pluginOptions);
-
-  return await Polly.synthesizeSpeech({
-    Engine: fieldArgs.engine,
-    LanguageCode: fieldArgs.languageCode,
-    LexiconNames: fieldArgs.lexiconNames,
-    OutputFormat: outputFormat,
-    SampleRate: fieldArgs.sampleRate,
-    ...(outputFormat === "json" && {
-      SpeechMarkTypes: fieldArgs.speechMarkTypes,
-    }),
-    Text: text,
-    TextType: "ssml",
-    VoiceId: fieldArgs.voiceId,
-  }).promise();
+  const client = initializeAwsPolly(pluginOptions);
+  return await client.send(
+    new SynthesizeSpeechCommand({
+      Engine: fieldArgs.engine,
+      LanguageCode: fieldArgs.languageCode,
+      LexiconNames: fieldArgs.lexiconNames,
+      OutputFormat: outputFormat,
+      SampleRate: fieldArgs.sampleRate,
+      ...(outputFormat === "json" && {
+        SpeechMarkTypes: fieldArgs.speechMarkTypes,
+      }),
+      Text: text,
+      TextType: "ssml",
+      VoiceId: fieldArgs.voiceId,
+    })
+  );
 };
 
 export const fetchSpeechMarks = async (
