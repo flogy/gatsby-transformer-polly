@@ -6,7 +6,7 @@
 
 [![Pull requests are welcome!](https://img.shields.io/badge/PRs-welcome-brightgreen)](#contribute-)
 [![npm](https://img.shields.io/npm/v/gatsby-transformer-polly)](https://www.npmjs.com/package/gatsby-transformer-polly)
-[![GitHub license](https://img.shields.io/github/license/flogy/gatsby-transformer-polly)](https://github.com/flogy/gatsby-transformer-polly/blob/master/LICENSE)
+[![GitHub license](https://img.shields.io/github/license/flogy/gatsby-transformer-polly)](https://github.com/flogy/gatsby-transformer-polly/blob/main/LICENSE)
 
 ## Installation
 
