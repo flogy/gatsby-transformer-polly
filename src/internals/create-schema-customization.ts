@@ -159,27 +159,25 @@ const createFields = async (
   };
 };
 
-export const createSchemaCustomization: GatsbyNode["createSchemaCustomization"] = async (
-  args,
-  pluginOptions
-) => {
-  const {
-    actions: { createTypes },
-    schema,
-  } = args;
-  const pollyType = schema.buildObjectType({
-    name: pollyTypeName,
-    fields: await createFields(args, pluginOptions),
-    interfaces: [`Node`],
-    extensions: {
-      infer: true,
-      childOf: {
-        types: [`File`],
+export const createSchemaCustomization: GatsbyNode["createSchemaCustomization"] =
+  async (args, pluginOptions) => {
+    const {
+      actions: { createTypes },
+      schema,
+    } = args;
+    const pollyType = schema.buildObjectType({
+      name: pollyTypeName,
+      fields: await createFields(args, pluginOptions),
+      interfaces: [`Node`],
+      extensions: {
+        infer: true,
+        childOf: {
+          types: [`File`],
+        },
       },
-    },
-  });
+    });
 
-  if (createTypes) {
-    createTypes([pollyType]);
-  }
-};
+    if (createTypes) {
+      createTypes([pollyType]);
+    }
+  };
