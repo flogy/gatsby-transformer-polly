@@ -93,5 +93,5 @@ export const fetchAudioFile = async (
   }
 
   mkdirSync(targetDirectoryAbsolute, { recursive: true });
-  writeFileSync(targetFilePath, audioData);
+  writeFileSync(targetFilePath, await audioData.transformToByteArray());
 };

@@ -1,8 +1,9 @@
+import { GatsbyNode } from "gatsby";
 import { pollyTypeName } from "./constants";
 
-export const onCreateNode = (
-  { actions: { createNode, createParentChildLink }, node, createNodeId }: any,
-  pluginOptions: any
+export const onCreateNode: GatsbyNode["onCreateNode"] = async (
+  { actions: { createNode, createParentChildLink }, node, createNodeId },
+  pluginOptions
 ) => {
   const isFileType = node.internal.type === "File";
   const isSsmlFile =
@@ -10,7 +11,6 @@ export const onCreateNode = (
   if (!isFileType || !isSsmlFile) {
     return;
   }
-
   const pollyNode = {
     id: createNodeId(`${node.id} >> ${pollyTypeName}`),
     children: [],
@@ -20,7 +20,6 @@ export const onCreateNode = (
       type: pollyTypeName,
     },
   };
-
   createNode(pollyNode);
   createParentChildLink({ parent: node, child: pollyNode });
 };
