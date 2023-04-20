@@ -1,5 +1,15 @@
 ### Changelog
 
+## 1.0.0
+
+### Breaking Changes
+
+- Plugin option `awsCredentials` was removed. Use `awsProfile` or environment variables instead (see [README](https://github.com/flogy/gatsby-transformer-polly#aws-credentials) for details).
+
+### Major Changes
+
+- a5e1c39: Added support for Gatsby 5.
+
 #### 0.0.1
 
 > 2 April 2020
